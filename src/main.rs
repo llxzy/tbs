@@ -1,6 +1,9 @@
+use std::io;
+
 struct Game {
     game_state: GameState
 }
+
 
 struct GameState {
     current_turn: u32,
@@ -37,7 +40,15 @@ impl GameState {
 
 
 fn main() {
-    let mut game = Game::new(10);
+    println!("Enter max rounds");
+    let mut input_string: String = String::new();
+    io::stdin().read_line(&mut input_string).expect("Failed to read.");
+    let rounds = match input_string.trim().parse::<u32>() {
+        Ok(num) => num,
+        Err(_) => panic!("Error parsing")
+    };
+    
+    let mut game = Game::new(rounds);
     game.game_loop();
 }
 
