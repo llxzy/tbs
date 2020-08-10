@@ -20,62 +20,65 @@ struct Game {
 
 struct GameState {
     current_turn: u32,
-    //max_turns: u32
+    distance: u32,
     ship: ship::Ship
 }
 
 impl Game {
-    fn new(max_turns: u32) -> Game {
+    fn new(max_turns: u32, distance: u32) -> Game {
         Game {
-            game_state: GameState::new(max_turns),
+            game_state: GameState::new(max_turns, distance),
             max_turns
         }        
     }
 
     fn game_loop(&mut self) {
-        let mut distance = 100;
-        while self.game_state.current_turn < self.max_turns {
-            println!("");
-            self.game_state.ship.display();
-            println!("Turns remaining: {}", self.max_turns - self.game_state.current_turn);
-            let action: Action = user_choice();
-            match action {
-                Action::Scavenge => self.game_state.ship.scavenge(),
-                Action::Refuel => self.game_state.ship.refuel(),
-                Action::Jump => {
-                    let jmp: bool = self.game_state.ship.jump();
-                    if jmp {
-                        distance -= 10;
-                        println!("You jump through hyperspace.");
-                        println!("Remaining distance: {} ly", distance);
-                    } else {
-                        println!("Not enough fuel.");
-                        continue;
-                    }
-                    
-                }
-            }
-            if distance == 0 {
-                println!("Congratulations, you won on turn {}", self.game_state.current_turn);
-                return;
-            }
-            self.game_state.advance_turn();            
+        let mut done: bool = false;
+        while !done {
+            self.game_state.advance_turn(self.max_turns, &mut done);            
         }
-        println!("Unfortunately, you didn't make it.")
     }
 }
 
 impl GameState {
-    fn new(max_turns: u32) -> GameState {
+    fn new(max_turns: u32, distance: u32) -> GameState {
         GameState {
             current_turn: 0,
+            distance,
             ship: ship::Ship::new(max_turns)
 
         }
     }
 
-    fn advance_turn(&mut self) {
+    fn advance_turn(&mut self, max_turns: u32, done: &mut bool) {
+        println!("");
+        self.ship.display();
+        println!("Turns remaining: {}", max_turns - self.current_turn);
+        let action: Action = user_choice();
+        match action {
+            Action::Scavenge => self.ship.scavenge(),
+            Action::Refuel => self.ship.refuel(),
+            Action::Jump => {
+                let jmp: bool = self.ship.jump();
+                if jmp {
+                    self.distance -= 10;
+                    println!("You jump through hyperspace.");
+                    println!("Remaining distance: {} ly", self.distance);
+                } else {
+                    println!("Not enough fuel.");
+                    return;
+                }
+            }
+        }
+        if self.distance == 0 {
+            println!("Congratulations, you won on turn {}", self.current_turn);
+            *done = true;
+            return;
+        }
         self.current_turn += 1;
+        if self.current_turn == max_turns {
+            println!("Unfortunately, you didn't make it.");
+        }
     }
 }
 
@@ -101,9 +104,12 @@ fn user_choice() -> Action {
     }
 }
 
+mod game;
+
 fn main() {
     let base_rounds = 20;
-    let mut game = Game::new(base_rounds);
+    let base_distance = 100;
+    let mut game = Game::new(base_rounds, base_distance);
     game.game_loop();
 }
 

@@ -1,3 +1,5 @@
+//TODO lots of magic numbers here
+
 pub struct Ship {
     fuel: f32,
     resources: i32
@@ -6,7 +8,7 @@ pub struct Ship {
 impl Ship {
     pub fn new(rounds: u32) -> Ship {
         Ship {
-            fuel: (rounds * 2) as f32,
+            fuel: (rounds * 3) as f32,
             resources: 0
         }
     }
