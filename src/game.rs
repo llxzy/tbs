@@ -1,5 +1,4 @@
 use std::io;
-
 use crate::ship;
 
 #[derive(FromPrimitive)]
@@ -11,17 +10,17 @@ enum Action {
 
 pub struct Game {
     game_state: GameState,
-    max_turns: u32
+    max_turns:  u32
 }
 
 struct GameState {
     current_turn: u32,
-    distance: u32,
-    ship: ship::Ship
+    distance:     i32,
+    ship:         ship::Ship
 }
 
 impl Game {
-    pub fn new(max_turns: u32, distance: u32) -> Game {
+    pub fn new(max_turns: u32, distance: i32) -> Game {
         Game {
             game_state: GameState::new(max_turns, distance),
             max_turns
@@ -37,7 +36,7 @@ impl Game {
 }
 
 impl GameState {
-    fn new(max_turns: u32, distance: u32) -> GameState {
+    fn new(max_turns: u32, distance: i32) -> GameState {
         GameState {
             current_turn: 0,
             distance,
@@ -47,8 +46,9 @@ impl GameState {
     }
 
     fn advance_turn(&mut self, max_turns: u32, done: &mut bool) {
-        println!("");
+        println!();
         self.ship.display();
+        println!("Remaining distance: {} ly", self.distance);
         println!("Turns remaining: {}", max_turns - self.current_turn);
         let action: Action = user_choice();
         match action {
@@ -59,7 +59,6 @@ impl GameState {
                 if jmp {
                     self.distance -= 10;
                     println!("You jump through hyperspace.");
-                    println!("Remaining distance: {} ly", self.distance);
                 } else {
                     println!("Not enough fuel.");
                     return;
@@ -67,11 +66,11 @@ impl GameState {
             }
         }
         self.current_turn += 1;
-        if self.distance == 0 {
+        if self.distance <= 0 {
             println!("Congratulations, you won on turn {}", self.current_turn);
             *done = true;
             return;
-        }        
+        }
         if self.current_turn == max_turns {
             println!("Unfortunately, you didn't make it.");
         }
