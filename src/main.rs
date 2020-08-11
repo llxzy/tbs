@@ -12,9 +12,6 @@ mod utils;
 
 fn main() {
     let args: Vec<_> = env::args().collect();
-    if args.len() == 3 {
-        panic!("Usage: cargo run <rounds> <distance>");
-    }
     let rounds: u32;
     let mut distance: i32;
     match args.len() {
