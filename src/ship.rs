@@ -2,22 +2,25 @@
 
 pub struct Ship {
     fuel: f32,
-    resources: i32
+    resources: i32,
 }
 
 impl Ship {
     pub fn new(rounds: u32) -> Ship {
         Ship {
             fuel: (rounds * 3) as f32,
-            resources: 0
+            resources: 0,
         }
     }
 
-    pub fn refuel(&mut self){
+    pub fn refuel(&mut self) {
         if self.resources >= 10 {
             self.fuel += 10.0;
             self.resources -= 10;
-            println!("Successfuly refueled. Fuel: {}, Resources: {}.", self.fuel, self.resources);
+            println!(
+                "Successfuly refueled. Fuel: {}, Resources: {}.",
+                self.fuel, self.resources
+            );
         }
         println!("Not enough resources.")
     }
@@ -39,5 +42,4 @@ impl Ship {
         println!("Current fuel: {}", self.fuel);
         println!("Current resources: {}", self.resources);
     }
-
 }

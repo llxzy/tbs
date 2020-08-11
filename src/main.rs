@@ -14,13 +14,12 @@ fn main() {
     }
     let rounds: u32 = match args[1].parse::<u32>() {
         Ok(num) => num,
-        Err(_) => panic!("<rounds> needs to be a number.")
+        Err(_) => panic!("<rounds> needs to be a number."),
     };
     let distance: i32 = match args[2].parse::<i32>() {
         Ok(num) => num,
-        Err(_) => panic!("<distance> needs to be a number.")
+        Err(_) => panic!("<distance> needs to be a number."),
     };
     let mut game = game::Game::new(rounds, distance); //TODO prettier declaration?
     game.game_loop();
 }
-

@@ -1,36 +1,36 @@
-use std::io;
 use crate::ship;
+use std::io;
 
 #[derive(FromPrimitive)]
 enum Action {
     Scavenge = 1,
-    Refuel   = 2,
-    Jump     = 3
+    Refuel = 2,
+    Jump = 3,
 }
 
 pub struct Game {
     game_state: GameState,
-    max_turns:  u32
+    max_turns: u32,
 }
 
 struct GameState {
     current_turn: u32,
-    distance:     i32,
-    ship:         ship::Ship
+    distance: i32,
+    ship: ship::Ship,
 }
 
 impl Game {
     pub fn new(max_turns: u32, distance: i32) -> Game {
         Game {
             game_state: GameState::new(max_turns, distance),
-            max_turns
-        }        
+            max_turns,
+        }
     }
 
     pub fn game_loop(&mut self) {
         let mut done: bool = false;
         while !done {
-            self.game_state.advance_turn(self.max_turns, &mut done);            
+            self.game_state.advance_turn(self.max_turns, &mut done);
         }
     }
 }
@@ -40,8 +40,7 @@ impl GameState {
         GameState {
             current_turn: 0,
             distance,
-            ship: ship::Ship::new(max_turns)
-
+            ship: ship::Ship::new(max_turns),
         }
     }
 
@@ -84,17 +83,19 @@ fn user_choice() -> Action {
     println!("3 - Hyperspace jump");
     loop {
         let mut input_string: String = String::new();
-        io::stdin().read_line(&mut input_string).expect("Failed to read");
+        io::stdin()
+            .read_line(&mut input_string)
+            .expect("Failed to read");
         let action = input_string.trim().parse::<i32>();
         match action {
             Ok(num) => {
                 let number = num::FromPrimitive::from_i32(num);
                 match number {
                     Some(a) => return a,
-                    None => continue
+                    None => continue,
                 }
-            },
-            Err(_) => continue
+            }
+            Err(_) => continue,
         }
     }
 }
