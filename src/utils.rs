@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-pub fn parse<T>(input: &String) -> T
+pub fn parse<T>(input: &str) -> T
 where
     T: FromStr,
 {
