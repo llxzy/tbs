@@ -1,4 +1,5 @@
 use crate::ship;
+use crate::utils;
 use std::io;
 
 #[derive(FromPrimitive)]
@@ -11,6 +12,7 @@ enum Action {
 pub struct Game {
     game_state: GameState,
     max_turns: u32,
+    scores: Vec<u32>,
 }
 
 struct GameState {
@@ -24,6 +26,7 @@ impl Game {
         Game {
             game_state: GameState::new(max_turns, distance),
             max_turns,
+            scores: utils::load_scores("score.txt"),
         }
     }
 

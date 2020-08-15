@@ -8,8 +8,6 @@ mod game;
 mod ship;
 mod utils;
 
-// TODO high score system
-
 fn main() {
     let args: Vec<_> = env::args().collect();
     let rounds: u32;
