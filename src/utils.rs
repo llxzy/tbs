@@ -27,6 +27,13 @@ pub fn load_scores(filename: &str) -> Vec<u32> {
     output
 }
 
-pub fn write_scores(scores: &Vec<u32>) {
-    
+pub fn write_scores(scores: &Vec<u32>, filename: &str) {
+    let mut file = fs::OpenOptions::new()
+                    .append(true)
+                    .create(true)
+                    .open(filename)
+                    .unwrap();
+    for &score in scores {
+        writeln!(file, "{}", score);
+    }    
 }
