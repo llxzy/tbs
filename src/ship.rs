@@ -1,5 +1,3 @@
-//TODO lots of magic numbers here
-
 pub struct Ship {
     fuel: f32,
     resources: i32,
