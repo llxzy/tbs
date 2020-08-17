@@ -7,18 +7,19 @@ enum Action {
     Scavenge = 1,
     Refuel = 2,
     Jump = 3,
+    Scores = 4,
 }
 
 pub struct Game {
     game_state: GameState,
     max_turns: u32,
-    scores: Vec<u32>,
 }
 
 struct GameState {
     current_turn: u32,
     distance: i32,
     ship: ship::Ship,
+    scores: Vec<u32>,
 }
 
 impl Game {
@@ -26,7 +27,6 @@ impl Game {
         Game {
             game_state: GameState::new(max_turns, distance),
             max_turns,
-            scores: utils::load_scores("score.txt"),
         }
     }
 
@@ -34,6 +34,12 @@ impl Game {
         let mut done: bool = false;
         while !done {
             self.game_state.advance_turn(self.max_turns, &mut done);
+        }
+        if done {
+            match utils::write_scores(self.game_state.current_turn, "scores.txt") {
+                Ok(_) => return,
+                Err(_) => return,
+            }
         }
     }
 }
@@ -44,6 +50,7 @@ impl GameState {
             current_turn: 0,
             distance,
             ship: ship::Ship::new(max_turns),
+            scores: utils::load_scores("scores.txt"),
         }
     }
 
@@ -54,6 +61,15 @@ impl GameState {
         println!("Turns remaining: {}", max_turns - self.current_turn);
         let action: Action = user_choice();
         match action {
+            Action::Scores => {
+                // TODO move to separate func
+                println!();
+                println!("High scores:\n-------");
+                for score in &self.scores {
+                    println!("{}", score);
+                }
+                println!("-------");
+            }
             Action::Scavenge => self.ship.scavenge(),
             Action::Refuel => self.ship.refuel(),
             Action::Jump => {
@@ -84,6 +100,7 @@ fn user_choice() -> Action {
     println!("1 - Scavenge");
     println!("2 - Refuel");
     println!("3 - Hyperspace jump");
+    println!("4 - Scores");
     loop {
         let mut input_string: String = String::new();
         io::stdin()

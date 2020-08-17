@@ -1,6 +1,6 @@
-use std::str::FromStr;
-use std::io::{self, BufRead};
 use std::fs;
+use std::io::{self, BufRead, Write};
+use std::str::FromStr;
 
 pub fn parse<T>(input: &str) -> T
 where
@@ -27,13 +27,13 @@ pub fn load_scores(filename: &str) -> Vec<u32> {
     output
 }
 
-pub fn write_scores(scores: &Vec<u32>, filename: &str) {
-    let mut file = fs::OpenOptions::new()
-                    .append(true)
-                    .create(true)
-                    .open(filename)
-                    .unwrap();
-    for &score in scores {
-        writeln!(file, "{}", score);
-    }    
+pub fn write_scores(score: u32, filename: &str) -> io::Result<()> {
+    let file = fs::OpenOptions::new()
+        .append(true)
+        .create(true)
+        .open(filename)
+        .unwrap();
+    let mut writer = io::BufWriter::new(file);
+    writer.write_fmt(format_args!("{}\n", score))?;
+    Ok(())
 }
